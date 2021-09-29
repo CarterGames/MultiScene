@@ -8,7 +8,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace JTools.MultiScene
+namespace MultiScene
 {
     [CreateAssetMenu(fileName = "Scene Group", menuName = "JTools/Multi-Scene/Scene Group", order = 0)]
     public class SceneGroup : ScriptableObject

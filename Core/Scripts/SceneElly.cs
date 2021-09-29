@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace JTools.MultiScene
+namespace MultiScene
 {
     /// <summary>
     /// Gets components from the current, any or all scenes currently in use...

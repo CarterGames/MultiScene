@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-namespace JTools.MultiScene
+namespace MultiScene
 {
     public class MultiSceneManager : MonoBehaviour
     {

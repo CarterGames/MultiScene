@@ -5,7 +5,7 @@
 // Date: 06/09/2021
 // ----------------------------------------------------------------------------
 
-namespace JTools.MultiScene
+namespace MultiScene
 {
     public interface IMultiSceneAwake
     {
