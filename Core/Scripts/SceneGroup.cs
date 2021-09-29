@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace MultiScene
 {
-    [CreateAssetMenu(fileName = "Scene Group", menuName = "JTools/Multi-Scene/Scene Group", order = 0)]
+    [CreateAssetMenu(fileName = "Scene Group", menuName = "Multi-Scene/Scene Group", order = 0)]
     public class SceneGroup : ScriptableObject
     {
         public List<string> scenes;
