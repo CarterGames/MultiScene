@@ -13,4 +13,18 @@ Download the latest version via the packages section, clone the repository or ju
 The currently workflow involves a scriptable object known as a <code>Scene Group</code> which can be used define how scenes are loaded using the <code>MultiSceneManager</code>. Traditional <code>Awake()</code> & <code>Start()</code> methods don't work as true awake and start for all the scenes you load using the manager. They run whenever the scene they are in is loaded, which is okay until you need to reference between scenes. Because of this we've added out own version implementing <code>IMultiSceneAwake</code> & <code>IMultiSceneStart</code> interfaces and having their methods calls run once all the scenes in the scene group have been loaded.
   
 ### Breakdown
-Coming Soon!
+Full Breakdown Coming Soon! Below is a work in progress...
+  
+### Scene Group
+#### Setup
+Scene groups can be created via the right-click create menu, under Multi-Scene/Scene Group. When first created you should see a grouping like this.
+  
+![sceneroup1](https://carter.games/git/multiscene/SceneGroup-01.png)
+  
+You start be adding the base scene, this is the scene that Unity considers the "Active" scene and is what all object will default spawn to unless you tell them otherwise.
+  
+![sceneroup2](https://carter.games/git/multiscene/SceneGroup-02.png)
+  
+Once you've setup the base scene you can define all the scenes to load in an additive form, these will all load at the same time using the Multi Scene Manager in the order defined in the group.
+  
+![sceneroup4](https://carter.games/git/multiscene/SceneGroup-04.png)
