@@ -10,13 +10,13 @@ Download the latest version via the packages section, clone the repository or ju
   ### Summary
 The currently workflow involves a scriptable object known as a <code>Scene Group</code> which can be used define how scenes are loaded using the <code>MultiSceneManager</code>. Traditional <code>Awake()</code>, <code>OnEnable()</code> & <code>Start()</code> methods don't work as true awake and start for all the scenes you load using the manager. They run whenever the scene they are in is loaded, which is okay until you need to reference between scenes. Because of this we've added out own version implementing <code>IMultiSceneAwake</code>, <code>IMultiSceneEnable</code> & <code>IMultiSceneStart</code> interfaces and having their methods calls run once all the scenes in the scene group have been loaded.
 
-###Preparation
+### Preparation
 To use the multi scene system, you will need a <code>Scene Group</code> with the necessary scenes you want to load. Once done, you'll need to add the Multi Scene Manager to a GameObject in the scene you want to load from. Normally this will be the scene you have as the base scene in the <code>Scene Group</code> already. 
 
-###Loading Scenes
+### Loading Scenes
 The Multi-Scene Manager will automatically load the scene group that is assigned in the inspector of the script. Once all the scenes are loaded the listeners will be called in the normal order. 
 
-###Interfaces
+### Interfaces
 The multi-scene manager calls all implementations of each interface in the normal order of Awake, Enable, Start. Each interface has one method such as <code>OnMultiSceneAwake()</code> which is invoked on said call.
   
 ### Scene Group Inspector
@@ -32,8 +32,8 @@ Once you've setup the base scene you can define all the scenes to load in an add
   
 ![scenegroup4](https://carter.games/git/multiscene/SceneGroup-04.png)
 
-##Issues & Bug Reporting
+## Issues & Bug Reporting
 If you find any issues with the code base or a bug in the project, please do add an issue on GitHub and I will try to resolve it. But remember this is a personal project, so it may be slow xD
 
-##Contribute
+## Contribute
 At this time I'm not really looking for extra contributors to the project, as at the end of the day this is a learning experience for me. You are welcome to make your own fork of the project and work on our version should you wish. 
