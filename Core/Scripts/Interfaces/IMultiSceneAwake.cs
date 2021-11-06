@@ -1,11 +1,18 @@
-﻿// ----------------------------------------------------------------------------
-// IMultiSceneAwake.cs
-// 
-// Author: Jonathan Carter (A.K.A. J)
-// Date: 06/09/2021
-// ----------------------------------------------------------------------------
+﻿/*
+ * 
+ *  Multi-Scene Workflow
+ *							  
+ *	Multi-Scene Awake Interface
+ *      A interface to implement when you want logic to run first once a scene group has loaded via the multi-scene manager.
+ *			
+ *  Written by:
+ *      Jonathan Carter
+ *		
+ *	Last Updated: 05/11/2021 (d/m/y)							
+ * 
+ */
 
-namespace MultiScene
+namespace MultiScene.Core
 {
     public interface IMultiSceneAwake
     {

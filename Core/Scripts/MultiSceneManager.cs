@@ -1,26 +1,49 @@
-// ----------------------------------------------------------------------------
-// MultiSceneLoad.cs
-// 
-// Author: Jonathan Carter (A.K.A. J)
-// Date: 31/08/2021
-// ----------------------------------------------------------------------------
+/*
+ * 
+ *  Multi-Scene Workflow
+ *							  
+ *	Multi-Scene Manager
+ *      Handles the loading and unloading of scenes.
+ *			
+ *  Written by:
+ *      Jonathan Carter
+ *		
+ *	Last Updated: 05/11/2021 (d/m/y)							
+ * 
+ */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-namespace MultiScene
+namespace MultiScene.Core
 {
     public class MultiSceneManager : MonoBehaviour
     {
+        [SerializeField] private bool loadOnAwake;
+        
         private List<string> cachedActiveSceneNames;
         private bool hasCachedScenesList;
+        private SceneGroup activeSceneGroup;
         
+        private List<IMultiSceneAwake> awakeListeners;
+        private List<IMultiSceneEnable> enableListeners;
+        private List<IMultiSceneStart> startListeners;
+
         public SceneGroup scenesToLoad;
         public UnityEvent BeforeScenesLoaded;
         public UnityEvent PostSceneLoaded;
+
+        public bool LoadOnAwake
+        {
+            get => loadOnAwake;
+            set => loadOnAwake = value;
+        }
+        
+        public static Action<string> OnSceneLoaded;
 
 
         /// <summary>
@@ -42,7 +65,6 @@ namespace MultiScene
             return false;
         }
 
-
         /// <summary>
         /// Checks to see if the scene by the name entered is in the group entered
         /// </summary>
@@ -54,7 +76,10 @@ namespace MultiScene
             return group.scenes.Contains(sceneName);
         }
 
-        private void GetActiveSceneNames()
+        /// <summary>
+        /// Gets the list of active scenes and returns them as a string. 
+        /// </summary>
+        private List<string> GetActiveSceneNames()
         {
             var _list = new List<string>();
             
@@ -63,11 +88,14 @@ namespace MultiScene
 
             cachedActiveSceneNames = _list;
             hasCachedScenesList = true;
+            return cachedActiveSceneNames;
         }
         
 
         private void Awake()
         {
+            if (!LoadOnAwake) return;
+            activeSceneGroup = scenesToLoad;
             BeforeScenesLoaded?.Invoke();
             LoadScenes();
         }
@@ -78,63 +106,73 @@ namespace MultiScene
             StopAllCoroutines();
         }
 
-		
-        /// <summary>
-        /// Calls all the listeners 
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="l"></param>
-        /// <returns></returns>
-        public void CallListeners(Scene s, LoadSceneMode l)
-        {
-            if (!s.name.Equals(scenesToLoad.scenes[scenesToLoad.scenes.Count - 1]))
-                return;
 
-            var _list = SceneElly.GetComponentsFromAllScenes<IMultiSceneAwake>();
-            StartCoroutine(CallMultiSceneAwake(_list));
-            SceneManager.sceneLoaded -= CallListeners;
+        /// <summary>
+        /// Sets the active group to the group entered...
+        /// </summary>
+        /// <param name="group"></param>
+        public void SetGroup(SceneGroup group)
+        {
+            activeSceneGroup = group;
+            GetActiveSceneNames();
         }
         
+        
+        /// <summary>
+        /// Calls all the listeners, but only actually runs on the last scene to load...
+        /// </summary>
+        private void CallListeners(Scene s, LoadSceneMode l)
+        {
+            OnSceneLoaded?.Invoke(s.name);
+            
+            if (!s.name.Equals(activeSceneGroup.scenes[activeSceneGroup.scenes.Count - 1]))
+                return;
+
+            awakeListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneAwake>();
+            enableListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneEnable>();
+            startListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneStart>();
+            
+            StartCoroutine(CallMultiSceneAwake());
+            SceneManager.sceneLoaded -= CallListeners;
+        }
+
 
         /// <summary>
         /// Calls all IMultiSceneAwake implementations in the project.
         /// </summary>
-        /// <param name="listeners">A list of all the awake listeners in the project</param>
-        private IEnumerator CallMultiSceneAwake(List<IMultiSceneAwake> listeners)
+        private IEnumerator CallMultiSceneAwake()
         {
             yield return new WaitForEndOfFrame();
             
-            foreach (var _l in listeners)
+            foreach (var _l in awakeListeners)
                 _l.OnMultiSceneAwake();
 
-            StartCoroutine(CallMultiSceneEnable(SceneElly.GetComponentsFromAllScenes<IMultiSceneEnable>()));
+            StartCoroutine(CallMultiSceneEnable());
         }
         
         
         /// <summary>
         /// Calls all IMultiSceneEnable implementations in the project. 
         /// </summary>
-        /// <param name="listeners">A list of all the enable listeners in the project</param>
-        private IEnumerator CallMultiSceneEnable(List<IMultiSceneEnable> listeners)
+        private IEnumerator CallMultiSceneEnable()
         {
             yield return new WaitForEndOfFrame();
             
-            foreach (var _l in listeners)
+            foreach (var _l in enableListeners)
                 _l.OnMultiSceneEnable();
             
-            StartCoroutine(CallMultiSceneStart(SceneElly.GetComponentsFromAllScenes<IMultiSceneStart>()));
+            StartCoroutine(CallMultiSceneStart());
         }
         
         
         /// <summary>
         /// Calls all IMultiSceneStart implementations in the project. 
         /// </summary>
-        /// <param name="listeners">A list of all the start listeners in the project</param>
-        private IEnumerator CallMultiSceneStart(List<IMultiSceneStart> listeners)
+        private IEnumerator CallMultiSceneStart()
         {
             yield return new WaitForEndOfFrame();
             
-            foreach (var _l in listeners)
+            foreach (var _l in startListeners)
                 _l.OnMultiSceneStart();
             
             PostSceneLoaded?.Invoke();
@@ -154,26 +192,46 @@ namespace MultiScene
 
             foreach (var _s in _scenes)
                 SceneManager.UnloadSceneAsync(_s);
+
+            Resources.UnloadUnusedAssets();
+        }
+        
+        
+        /// <summary>
+        /// Unloads all the additive scenes loaded but keeps the base scene as is unless overridden with a load method...
+        /// </summary>
+        public void UnloadAllAdditiveScenes()
+        {
+            var _scenes = new List<string>();
+            var _activeScene = SceneManager.GetActiveScene().name;
+
+            for (var i = SceneManager.sceneCount - 1; i >= 0; i--)
+            {
+                if (SceneManager.GetSceneAt(i).name.Equals(_activeScene)) continue;
+                _scenes.Add(SceneManager.GetSceneAt(i).name);
+            }
+
+            foreach (var _s in _scenes)
+                SceneManager.UnloadSceneAsync(_s);
         }
 
 
         /// <summary>
-        /// Loads the scenes in the selected scene group...
+        /// Loads the scenes in the inspector selected scene group... overriding any existing active scenes. 
         /// </summary>
         public void LoadScenes()
         {
+            activeSceneGroup = scenesToLoad;
             var _scenes = new List<string>();
 
             for (var i = 0; i < SceneManager.sceneCount; i++)
-            {
                 _scenes.Add(SceneManager.GetSceneAt(i).name);
-            }
 
-            for (var i = 0; i < scenesToLoad.scenes.Count; i++)
+            for (var i = 0; i < activeSceneGroup.scenes.Count; i++)
             {
-                var _s = scenesToLoad.scenes[i];
+                var _s = activeSceneGroup.scenes[i];
 
-                if (i.Equals(scenesToLoad.scenes.Count - 1))
+                if (i.Equals(activeSceneGroup.scenes.Count - 1))
                     SceneManager.sceneLoaded += CallListeners;
                     
                 if (_scenes.Contains(_s)) continue;
@@ -186,25 +244,54 @@ namespace MultiScene
         }
         
         /// <summary>
-        /// Loads the scenes in the selected scene group...
+        /// Loads the scenes in the selected scene group...overriding any existing active scenes. 
         /// </summary>
         public void LoadScenes(SceneGroup group)
         {
+            activeSceneGroup = group;
             var _scenes = new List<string>();
 
-            for (var i = 0; i < SceneManager.sceneCount; i++)
-            {
-                _scenes.Add(SceneManager.GetSceneAt(i).name);
-            }
+             for (var i = 0; i < SceneManager.sceneCount; i++)
+                 _scenes.Add(SceneManager.GetSceneAt(i).name);
+            
 
-            for (var i = 0; i < group.scenes.Count; i++)
+            for (var i = 0; i < activeSceneGroup.scenes.Count; i++)
             {
-                var _s = group.scenes[i];
+                var _s = activeSceneGroup.scenes[i];
 
-                if (i.Equals(group.scenes.Count - 1))
+                if (i.Equals(activeSceneGroup.scenes.Count - 1))
                     SceneManager.sceneLoaded += CallListeners;
                     
                 if (_scenes.Contains(_s)) continue;
+                
+                if (i.Equals(0))
+                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Single);
+                else
+                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Additive);
+            }
+        }
+        
+        
+        /// <summary>
+        /// Loads the scenes in the selected scene group but leaves the base scene as is...
+        /// </summary>
+        public void LoadScenesKeepBase(SceneGroup group)
+        {
+            activeSceneGroup = group;
+            var _activeScene = SceneManager.GetActiveScene().name;
+            
+            UnloadAllAdditiveScenes();
+
+            for (var i = 0; i < activeSceneGroup.scenes.Count; i++)
+            {
+                var _s = activeSceneGroup.scenes[i];
+
+                if (i.Equals(activeSceneGroup.scenes.Count - 1))
+                {
+                    SceneManager.sceneLoaded += CallListeners;
+                }
+
+                if (_s.Equals(_activeScene)) continue;
                 
                 if (i.Equals(0))
                     SceneManager.LoadSceneAsync(_s, LoadSceneMode.Single);

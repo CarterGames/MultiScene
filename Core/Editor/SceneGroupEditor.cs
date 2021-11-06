@@ -9,28 +9,21 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace MultiScene.Editor
+namespace MultiScene.Core.Editor
 {
     [CustomEditor(typeof(SceneGroup))]
     public class SceneGroupEditor : UnityEditor.Editor
     {
-        public static Color Green => new Color32(72, 222, 55, 255);
-        public static Color Yellow => new Color32(245, 234, 56, 255);
-        public static Color Orange => new Color32(255, 170, 134, 255);
-        public static Color Red => new Color32(255, 150, 157, 255);
-        public static Color Blue => new Color32(151, 196, 255, 255);
-        public static Color Purple => new Color32(196, 151, 255, 255);
-        public static Color Pink => new Color32(255, 151, 242, 255);
-        public static Color LightGrey => new Color32(199, 199, 199, 255);
-        public static Color DarkGrey => new Color32(88, 88, 88, 255);
-        public static Color White => Color.white;
-        public static Color Black => Color.black;
-        
+        private static Color Green => new Color32(72, 222, 55, 255);
+        private static Color Yellow => new Color32(245, 234, 56, 255);
+        private static Color Red => new Color32(255, 150, 157, 255);
+
         
         private SerializedProperty scenes;
-        private Color defaultBGCol;
-        private Color defaultGUICol;
+        private static Color defaultBGCol;
+        private static Color defaultGUICol;
 
+        
         private void OnEnable()
         {
             scenes = serializedObject.FindProperty("scenes");
@@ -43,15 +36,12 @@ namespace MultiScene.Editor
         {
             serializedObject.Update();
             
-            HorizontalCentered(() =>
-            {
-                BoldCompact(" Scene Group ");
-            });
+            // Renders the title for the group...
+            HorizontalCentered(RenderSceneGroupTitle);
             
+            // Shows the base field button if there are no entries in the scene group...
             if (scenes == null || scenes.arraySize <= 0)
-            {
                 GreenButton("Add Base Scene", CallAddBaseField);
-            }
 
             if (scenes.arraySize > 0)
             {
@@ -60,22 +50,39 @@ namespace MultiScene.Editor
                 if (scenes.arraySize > 1)
                     RenderAdditiveSceneFields();
                 else
-                    YellowButton("Add Scene", CallAddNewAdditiveScene);
+                    YellowButton("Add Additive Scene", CallAddNewAdditiveScene);
+                
+                GUILayout.Space(25f);
+                RedButton("Reset", CallResetGroup);
             }
 
+            // Applies changes if changes have been made...
+            if (!serializedObject.hasModifiedProperties) return;
             serializedObject.ApplyModifiedProperties();
-
-            // Un-comment for debugging...
-            //base.OnInspectorGUI();
         }
 
 
+        /// <summary>
+        /// Adds the base scene to the editor
+        /// </summary>
         private void CallAddBaseField()
         {
             scenes.InsertArrayElementAtIndex(0);
         }
+
+
+        /// <summary>
+        /// Renders the title section of the editor...
+        /// </summary>
+        private void RenderSceneGroupTitle()
+        {
+            BoldCompact(" Scene Group ");
+        }
         
 
+        /// <summary>
+        /// Renders the base scene grouping...
+        /// </summary>
         private void RenderBaseSceneField()
         {
             GUI.backgroundColor = Green;
@@ -87,6 +94,9 @@ namespace MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Renders the additive scenes into a grouping...
+        /// </summary>
         private void RenderAdditiveSceneFields()
         {
             GUI.backgroundColor = Yellow;
@@ -98,32 +108,55 @@ namespace MultiScene.Editor
             {
                 Horizontal(() =>
                 {
+                    GUI.backgroundColor = Yellow;
+                    
                     EditorGUILayout.PropertyField(scenes.GetArrayElementAtIndex(i), GUIContent.none);
                 
                     GreenButton("+", () => CallAddNewAdditiveScene(i));
                     RedButton("-", () => CallRemoveElementAtIndex(i));
+                    
+                    GUI.backgroundColor = defaultBGCol;
                 });
             }
 
             GUI.backgroundColor = defaultBGCol;
         }
 
-
+        
+        /// <summary>
+        /// Removed the element at the index entered...
+        /// </summary>
+        /// <param name="i">The element to edit</param>
         private void CallRemoveElementAtIndex(int i)
         {
             scenes.DeleteArrayElementAtIndex(i);
         }
 
+        /// <summary>
+        /// Adds a new element to the scenes list that is blank at the element entered.
+        /// </summary>
+        /// <param name="i">The element to edit</param>
         private void CallAddNewAdditiveScene(int i)
         {
             scenes.InsertArrayElementAtIndex(i);
             scenes.GetArrayElementAtIndex(i + 1).stringValue = string.Empty;
         }
         
+        /// <summary>
+        /// Adds a new element to the scenes list that is blank.
+        /// </summary>
         private void CallAddNewAdditiveScene()
         {
             scenes.InsertArrayElementAtIndex(scenes.arraySize - 1);
             scenes.GetArrayElementAtIndex(scenes.arraySize - 1).stringValue = string.Empty;
+        }
+
+        /// <summary>
+        /// Resets the scenes list to a new list.
+        /// </summary>
+        private void CallResetGroup()
+        {
+            scenes.ClearArray();
         }
         
         /// <summary>
@@ -145,11 +178,10 @@ namespace MultiScene.Editor
         /// <param name="options">GUILayoutOption[] | Layout options.</param>
         private static void GreenButton(string label, Action callback, params GUILayoutOption[] options)
         {
-            var _default = GUI.backgroundColor;
             GUI.backgroundColor = Green;
             if (GUILayout.Button(label, options))
                 callback();
-            GUI.backgroundColor = _default;
+            GUI.backgroundColor = defaultBGCol;
         }
         
 
@@ -161,11 +193,10 @@ namespace MultiScene.Editor
         /// <param name="options">GUILayoutOption[] | Layout options.</param>
         private static void YellowButton(string label, Action callback, params GUILayoutOption[] options)
         {
-            var _default = GUI.backgroundColor;
             GUI.backgroundColor = Yellow;
             if (GUILayout.Button(label, options))
                 callback();
-            GUI.backgroundColor = _default;
+            GUI.backgroundColor = defaultBGCol;
         }
         
         
@@ -175,13 +206,12 @@ namespace MultiScene.Editor
         /// <param name="label">String | Label for the button.</param>
         /// <param name="callback">Action | The actions to perform on button press.</param>
         /// <param name="options">GUILayoutOption[] | Layout options.</param>
-        public static void RedButton(string label, Action callback, params GUILayoutOption[] options)
+        private static void RedButton(string label, Action callback, params GUILayoutOption[] options)
         {
-            var _default = GUI.backgroundColor;
             GUI.backgroundColor = Red;
             if (GUILayout.Button(label, options))
                 callback();
-            GUI.backgroundColor = _default;
+            GUI.backgroundColor = defaultBGCol;
         }
         
         /// <summary>
@@ -221,7 +251,7 @@ namespace MultiScene.Editor
         /// </summary>
         /// <param name="blockElements">Action | Stuff to display</param>
         /// <remarks>Actions can be () => {} or a method.</remarks>
-        public static void Horizontal(Action blockElements)
+        private static void Horizontal(Action blockElements)
         {
             EditorGUILayout.BeginHorizontal();
             blockElements();
@@ -234,7 +264,7 @@ namespace MultiScene.Editor
         /// </summary>
         /// <param name="blockElements">Action | Stuff to display</param>
         /// <remarks>Actions can be () => {} or a method.</remarks>
-        public static void HorizontalCentered(Action blockElements)
+        private static void HorizontalCentered(Action blockElements)
         {
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
