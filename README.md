@@ -1,9 +1,7 @@
 # Multi Scene Workflow
 
 # Summary
-The currently workflow involves a scriptable object known as a Scene Group which can be used define how scenes are loaded using the Multi-Scene Manager. 
-
-Traditional Awake(), OnEnable() & Start() methods don't work as true awake and start for all the scenes you load using more than one scene. They run whenever the scene they are in is loaded, which is okay until you need to reference between scenes. as they will just initiate when they themselves are loaded. So for example if you were to have a reference in **Scene A** which is loaded first that needs something in **Scene B** which is loaded second. The reference would fail as **Scene B** isn't loaded yet and therefore can't be found because on **Scene A** was loaded at the time the reference call was made.  Because of this I added out own version implementing IMultiSceneAwake, IMultiSceneEnable & IMultiSceneStart interfaces and having their methods calls run once all the scenes in the scene group have been loaded. More on this in a bit.
+A package to help use multiple scenes together at once. Traditional Awake(), OnEnable() & Start() methods don't work as true awake and start for all the scenes you load using more than one scene. They run whenever the scene they are in is loaded, which is okay until you need to reference between scenes. as they will just initiate when they themselves are loaded. So for example if you were to have a reference in **Scene A** which is loaded first that needs something in **Scene B** which is loaded second. The reference would fail as **Scene B** isn't loaded yet and therefore can't be found because on **Scene A** was loaded at the time the reference call was made.  Because of this I added out own version implementing IMultiSceneAwake, IMultiSceneEnable & IMultiSceneStart interfaces and having their methods calls run once all the scenes in the scene group have been loaded. More on this in a bit.
 
 ## Installation
 
