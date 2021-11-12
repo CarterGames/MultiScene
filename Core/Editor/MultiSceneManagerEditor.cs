@@ -1,15 +1,5 @@
-﻿// ----------------------------------------------------------------------------
-// MultiSceneManagerEditor.cs
-// 
-// Author: Jonathan Carter (A.K.A. J)
-// Date: 10/11/2021
-// ----------------------------------------------------------------------------
-
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using JTools.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -29,8 +19,16 @@ namespace MultiScene.Core.Editor
 
         public override void OnInspectorGUI()
         {
-            Button.ColourButton("Load All In Editor (Will throw editor error, ignore it)", Colours.Green, LoadActiveSceneGroupInEditor);
-            Button.ColourButton("Load All Additive In Editor", Colours.Yellow, LoadAdditiveActiveSceneGroupInEditor);
+            if (GUILayout.Button("Load All In Editor (Will throw editor error, ignore it)"))
+            {
+                LoadActiveSceneGroupInEditor();
+            }
+        
+            if (GUILayout.Button("Load All Additive In Editor"))
+            {
+                LoadAdditiveActiveSceneGroupInEditor();
+            }
+   
             base.OnInspectorGUI();
         }
 
