@@ -44,6 +44,7 @@ namespace MultiScene.Core
         }
         
         public static Action<string> OnSceneLoaded;
+        public static Action<SceneGroup> OnSceneGroupLoaded;
 
 
         /// <summary>
@@ -56,13 +57,7 @@ namespace MultiScene.Core
             if (!hasCachedScenesList)
                 GetActiveSceneNames();
 
-            foreach (var s in cachedActiveSceneNames)
-            {
-                if (SceneManager.GetSceneByName(s).name.Equals(sceneName))
-                    return true;
-            }
-
-            return false;
+            return cachedActiveSceneNames.Contains(sceneName);
         }
 
         /// <summary>
@@ -79,7 +74,7 @@ namespace MultiScene.Core
         /// <summary>
         /// Gets the list of active scenes and returns them as a string. 
         /// </summary>
-        private List<string> GetActiveSceneNames()
+        public List<string> GetActiveSceneNames()
         {
             var _list = new List<string>();
             
@@ -132,6 +127,8 @@ namespace MultiScene.Core
             enableListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneEnable>();
             startListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneStart>();
             
+            GetActiveSceneNames();
+            
             StartCoroutine(CallMultiSceneAwake());
             SceneManager.sceneLoaded -= CallListeners;
         }
@@ -176,6 +173,7 @@ namespace MultiScene.Core
                 _l.OnMultiSceneStart();
             
             PostSceneLoaded?.Invoke();
+            OnSceneGroupLoaded?.Invoke(activeSceneGroup);
         }
 
 
@@ -241,6 +239,8 @@ namespace MultiScene.Core
                 else
                     SceneManager.LoadSceneAsync(_s, LoadSceneMode.Additive);
             }
+            
+            GetActiveSceneNames();
         }
         
         /// <summary>
@@ -269,6 +269,8 @@ namespace MultiScene.Core
                 else
                     SceneManager.LoadSceneAsync(_s, LoadSceneMode.Additive);
             }
+            
+            GetActiveSceneNames();
         }
         
         
@@ -298,6 +300,8 @@ namespace MultiScene.Core
                 else
                     SceneManager.LoadSceneAsync(_s, LoadSceneMode.Additive);
             }
+            
+            GetActiveSceneNames();
         }
     }
 }
