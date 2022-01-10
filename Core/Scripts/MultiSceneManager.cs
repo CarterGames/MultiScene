@@ -59,6 +59,17 @@ namespace MultiScene.Core
 
             return cachedActiveSceneNames.Contains(sceneName);
         }
+        
+        
+        /// <summary>
+        /// Checks to see if the scene by the name entered is in the group entered
+        /// </summary>
+        /// <param name="sceneName">The scene to find</param>
+        /// <returns>Bool</returns>
+        public bool IsSceneInGroup( string sceneName)
+        {
+            return activeSceneGroup.scenes.Contains(sceneName);
+        }
 
         /// <summary>
         /// Checks to see if the scene by the name entered is in the group entered
@@ -123,9 +134,9 @@ namespace MultiScene.Core
             if (!s.name.Equals(activeSceneGroup.scenes[activeSceneGroup.scenes.Count - 1]))
                 return;
 
-            awakeListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneAwake>();
-            enableListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneEnable>();
-            startListeners = SceneElly.GetComponentsFromAllScenes<IMultiSceneStart>();
+            awakeListeners = MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneAwake>();
+            enableListeners = MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneEnable>();
+            startListeners = MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneStart>();
             
             GetActiveSceneNames();
             
@@ -190,8 +201,6 @@ namespace MultiScene.Core
 
             foreach (var _s in _scenes)
                 SceneManager.UnloadSceneAsync(_s);
-
-            Resources.UnloadUnusedAssets();
         }
         
         

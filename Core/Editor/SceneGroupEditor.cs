@@ -6,8 +6,13 @@
 // ----------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using JTools.Editor;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MultiScene.Core.Editor
 {
@@ -20,6 +25,7 @@ namespace MultiScene.Core.Editor
 
         
         private SerializedProperty scenes;
+        private SerializedProperty persistentScenes;
         private static Color defaultBGCol;
         private static Color defaultGUICol;
 
@@ -27,6 +33,7 @@ namespace MultiScene.Core.Editor
         private void OnEnable()
         {
             scenes = serializedObject.FindProperty("scenes");
+            persistentScenes = serializedObject.FindProperty("persistentScenes");
             defaultBGCol = GUI.backgroundColor;
             defaultGUICol = GUI.color;
         }
@@ -38,6 +45,11 @@ namespace MultiScene.Core.Editor
             
             // Renders the title for the group...
             HorizontalCentered(RenderSceneGroupTitle);
+
+            if (GUILayout.Button("Load Scenes"))
+            {
+                LoadSceneGroupInEditor();
+            }
             
             // Shows the base field button if there are no entries in the scene group...
             if (scenes == null || scenes.arraySize <= 0)
@@ -51,10 +63,12 @@ namespace MultiScene.Core.Editor
                     RenderAdditiveSceneFields();
                 else
                     YellowButton("Add Additive Scene", CallAddNewAdditiveScene);
-                
-                GUILayout.Space(25f);
-                RedButton("Reset", CallResetGroup);
             }
+
+            GUILayout.Space(25f);
+            RedButton("Reset", CallResetGroup);
+            
+       
 
             // Applies changes if changes have been made...
             if (!serializedObject.hasModifiedProperties) return;
@@ -112,8 +126,8 @@ namespace MultiScene.Core.Editor
                     
                     EditorGUILayout.PropertyField(scenes.GetArrayElementAtIndex(i), GUIContent.none);
                 
-                    GreenButton("+", () => CallAddNewAdditiveScene(i));
-                    RedButton("-", () => CallRemoveElementAtIndex(i));
+                    GreenButton("+", () => CallAddNewAdditiveScene(scenes, i));
+                    RedButton("-", () => CallRemoveElementAtIndex(scenes, i));
                     
                     GUI.backgroundColor = defaultBGCol;
                 });
@@ -122,24 +136,24 @@ namespace MultiScene.Core.Editor
             GUI.backgroundColor = defaultBGCol;
         }
 
-        
+
         /// <summary>
         /// Removed the element at the index entered...
         /// </summary>
         /// <param name="i">The element to edit</param>
-        private void CallRemoveElementAtIndex(int i)
+        private void CallRemoveElementAtIndex(SerializedProperty prop, int i)
         {
-            scenes.DeleteArrayElementAtIndex(i);
+            prop.DeleteArrayElementAtIndex(i);
         }
 
         /// <summary>
         /// Adds a new element to the scenes list that is blank at the element entered.
         /// </summary>
         /// <param name="i">The element to edit</param>
-        private void CallAddNewAdditiveScene(int i)
+        private void CallAddNewAdditiveScene(SerializedProperty prop, int i)
         {
-            scenes.InsertArrayElementAtIndex(i);
-            scenes.GetArrayElementAtIndex(i + 1).stringValue = string.Empty;
+            prop.InsertArrayElementAtIndex(i);
+            prop.GetArrayElementAtIndex(i + 1).stringValue = string.Empty;
         }
         
         /// <summary>
@@ -157,7 +171,45 @@ namespace MultiScene.Core.Editor
         private void CallResetGroup()
         {
             scenes.ClearArray();
+            persistentScenes.ClearArray();
         }
+        
+        
+        private void LoadSceneGroupInEditor()
+        {
+            var _sceneList = new List<string>();
+
+            for (var i = 0; i < scenes.arraySize; i++)
+                _sceneList.Add(scenes.GetArrayElementAtIndex(i).stringValue);
+
+            var _paths = GetScenePaths();
+            if (_sceneList.Count <= 0) return;
+
+            for (var i = 0; i < _sceneList.Count; i++)
+            {
+                var _scene = _sceneList[i];
+                var _path = _paths.FirstOrDefault(t => t.Contains(_scene));
+
+                if (i.Equals(0))
+                    EditorSceneManager.OpenScene(_path, OpenSceneMode.Single);
+                else
+                    EditorSceneManager.OpenScene(_path, OpenSceneMode.Additive);
+            }
+        }
+        
+        
+        private List<string> GetScenePaths()
+        {
+            var sceneNumber = SceneManager.sceneCountInBuildSettings;
+            string[] arrayOfNames;
+            arrayOfNames = new string[sceneNumber];
+            
+            for (int i = 0; i < sceneNumber; i++)
+                arrayOfNames[i] = SceneUtility.GetScenePathByBuildIndex(i);
+
+            return arrayOfNames.ToList();
+        }
+        
         
         /// <summary>
         /// Shows a compact button where the label controls the size of the button.

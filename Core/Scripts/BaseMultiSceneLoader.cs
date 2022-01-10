@@ -28,7 +28,7 @@ namespace MultiScene.Core
         /// </summary>
         public virtual void LoadSceneGroup()
         {
-            SceneElly.GetComponentFromAllScenes<MultiSceneManager>().LoadScenes(loadGroup);
+            MultiSceneElly.GetComponentFromAllScenes<MultiSceneManager>().LoadScenes(loadGroup);
         }
     }
 }

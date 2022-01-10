@@ -2,7 +2,7 @@
  * 
  *  Multi-Scene Workflow
  *							  
- *	Scene Elly
+ *	Multi Scene
  *      A J-Tools class that allows you to get objects in the scene as well as move objects between scenes.
  *			
  *  Written by:
@@ -22,9 +22,21 @@ namespace MultiScene.Core
     /// Gets components from the current, any or all scenes currently in use...
     /// A bit more performant that FindObjectsOfType & GameObject.Find()...
     /// </summary>
-    /// <remarks>Why SceneElly? its my short slang for SceneElement xD</remarks>
-    public static class SceneElly
+    public static class MultiSceneElly
     {
+        /// <summary>
+        /// Gets the root objects in the scene requested.
+        /// </summary>
+        /// <param name="scene">The scene to search through</param>
+        /// <returns>The objects in said scene</returns>
+        public static GameObject[] GetRootObjects(string scene)
+        {
+            var _scene = SceneManager.GetSceneByName(scene);
+            if (_scene == null) return null;
+            return _scene.GetRootGameObjects();
+        }
+        
+        
         /// <summary>
         /// Moves the object entered in the scene string entered...
         /// </summary>
@@ -127,6 +139,27 @@ namespace MultiScene.Core
         {
             var _objects = new List<GameObject>();
             var _scene = SceneManager.GetActiveScene();
+            var _validObjectsFromScene = new List<T>();
+            
+            _scene.GetRootGameObjects(_objects);
+            
+            foreach (var _go in _objects)
+                _validObjectsFromScene.AddRange(_go.GetComponentsInChildren<T>(true));
+
+            return _validObjectsFromScene;
+        }
+        
+        
+        /// <summary>
+        /// Gets any and all of the type requested from the active scene...
+        /// </summary>
+        /// <param name="obj">The object in the scene to search</param>
+        /// <typeparam name="T">The type to get</typeparam>
+        /// <returns>List of any instances of the type found in the scene</returns>
+        public static List<T> GetComponentsFromThisScene<T>(GameObject obj)
+        {
+            var _objects = new List<GameObject>();
+            var _scene = obj.scene;
             var _validObjectsFromScene = new List<T>();
             
             _scene.GetRootGameObjects(_objects);
@@ -281,6 +314,22 @@ namespace MultiScene.Core
         public static T GetComponentFromScene<T>()
         {
             var _allOfType = GetComponentsFromScene<T>();
+
+            return _allOfType.Count > 0 
+                ? _allOfType[0] 
+                : default;
+        }
+        
+        
+        /// <summary>
+        /// Gets the first of any and all of the type requested from the active scene...
+        /// </summary>
+        /// <param name="obj">The object in the scene to search</param>
+        /// <typeparam name="T">The type to get</typeparam>
+        /// <returns>First instance of the type found in the active scene</returns>
+        public static T GetComponentFromThisScene<T>(GameObject obj)
+        {
+            var _allOfType = GetComponentsFromThisScene<T>(obj);
 
             return _allOfType.Count > 0 
                 ? _allOfType[0] 

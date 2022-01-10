@@ -1,9 +1,20 @@
-﻿using System.Collections.Generic;
+﻿// ----------------------------------------------------------------------------
+// MultiSceneManagerEditor.cs
+// 
+// Author: Jonathan Carter (A.K.A. J)
+// Date: 10/11/2021
+// ----------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using JTools.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace MultiScene.Core.Editor
 {
@@ -23,12 +34,12 @@ namespace MultiScene.Core.Editor
             {
                 LoadActiveSceneGroupInEditor();
             }
-        
+            
             if (GUILayout.Button("Load All Additive In Editor"))
             {
                 LoadAdditiveActiveSceneGroupInEditor();
             }
-   
+            
             base.OnInspectorGUI();
         }
 
@@ -38,6 +49,8 @@ namespace MultiScene.Core.Editor
             var _sceneList = multiSceneManager.scenesToLoad.scenes;
             var _paths = GetScenePaths();
             if (_sceneList.Count <= 0) return;
+
+            Selection.objects = Array.Empty<Object>();
 
             for (var i = 0; i < _sceneList.Count; i++)
             {
