@@ -29,11 +29,13 @@ namespace MultiScene.Core
         private bool hasCachedScenesList;
         private SceneGroup activeSceneGroup;
         
-        private List<IMultiSceneAwake> awakeListeners;
-        private List<IMultiSceneEnable> enableListeners;
-        private List<IMultiSceneStart> startListeners;
+        private List<OrderedListenerData<IMultiSceneAwake>> awakeOrderedListeners;
+        private List<OrderedListenerData<IMultiSceneEnable>> enableOrderedListeners;
+        private List<OrderedListenerData<IMultiSceneStart>> startOrderedListeners;
 
-        public SceneGroup scenesToLoad;
+        private static MultiSceneManager main;
+
+        public SceneGroup defaultGroup;
         public UnityEvent BeforeScenesLoaded;
         public UnityEvent PostSceneLoaded;
 
@@ -45,6 +47,8 @@ namespace MultiScene.Core
         
         public static Action<string> OnSceneLoaded;
         public static Action<SceneGroup> OnSceneGroupLoaded;
+        public SceneGroup GetActiveGroup => activeSceneGroup;
+        
 
 
         /// <summary>
@@ -52,12 +56,12 @@ namespace MultiScene.Core
         /// </summary>
         /// <param name="sceneName">The scene to find</param>
         /// <returns>Bool</returns>
-        public bool IsSceneLoaded(string sceneName)
+        public static bool IsSceneLoaded(string sceneName)
         {
-            if (!hasCachedScenesList)
-                GetActiveSceneNames();
+            if (!main.hasCachedScenesList)
+                main.GetActiveSceneNames();
 
-            return cachedActiveSceneNames.Contains(sceneName);
+            return main.cachedActiveSceneNames.Contains(sceneName);
         }
         
         
@@ -66,9 +70,9 @@ namespace MultiScene.Core
         /// </summary>
         /// <param name="sceneName">The scene to find</param>
         /// <returns>Bool</returns>
-        public bool IsSceneInGroup( string sceneName)
+        public static bool IsSceneInGroup(string sceneName)
         {
-            return activeSceneGroup.scenes.Contains(sceneName);
+            return main.activeSceneGroup.scenes.Contains(sceneName);
         }
 
         /// <summary>
@@ -77,7 +81,7 @@ namespace MultiScene.Core
         /// <param name="group">The group to check in</param>
         /// <param name="sceneName">The scene to find</param>
         /// <returns>Bool</returns>
-        public bool IsSceneInGroup(SceneGroup group, string sceneName)
+        public static bool IsSceneInGroup(SceneGroup group, string sceneName)
         {
             return group.scenes.Contains(sceneName);
         }
@@ -100,8 +104,13 @@ namespace MultiScene.Core
 
         private void Awake()
         {
+            if (main == null)
+                main = this;
+            else
+                Destroy(this);
+            
             if (!LoadOnAwake) return;
-            activeSceneGroup = scenesToLoad;
+            activeSceneGroup = defaultGroup;
             BeforeScenesLoaded?.Invoke();
             LoadScenes();
         }
@@ -134,14 +143,19 @@ namespace MultiScene.Core
             if (!s.name.Equals(activeSceneGroup.scenes[activeSceneGroup.scenes.Count - 1]))
                 return;
 
-            awakeListeners = MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneAwake>();
-            enableListeners = MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneEnable>();
-            startListeners = MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneStart>();
-            
+            GetSortedListeners();
             GetActiveSceneNames();
             
             StartCoroutine(CallMultiSceneAwake());
             SceneManager.sceneLoaded -= CallListeners;
+        }
+        
+
+        private void GetSortedListeners()
+        {
+            awakeOrderedListeners = OrderedHandler.OrderListeners(MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneAwake>(), "OnMultiSceneAwake"); 
+            enableOrderedListeners = OrderedHandler.OrderListeners(MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneEnable>(), "OnMultiSceneEnable"); 
+            startOrderedListeners = OrderedHandler.OrderListeners(MultiSceneElly.GetComponentsFromAllScenes<IMultiSceneStart>(), "OnMultiSceneStart"); 
         }
 
 
@@ -152,8 +166,8 @@ namespace MultiScene.Core
         {
             yield return new WaitForEndOfFrame();
             
-            foreach (var _l in awakeListeners)
-                _l.OnMultiSceneAwake();
+            foreach (var _l in awakeOrderedListeners)
+                _l.listener.OnMultiSceneAwake();
 
             StartCoroutine(CallMultiSceneEnable());
         }
@@ -166,9 +180,9 @@ namespace MultiScene.Core
         {
             yield return new WaitForEndOfFrame();
             
-            foreach (var _l in enableListeners)
-                _l.OnMultiSceneEnable();
-            
+            foreach (var _l in enableOrderedListeners)
+                _l.listener.OnMultiSceneEnable();
+
             StartCoroutine(CallMultiSceneStart());
         }
         
@@ -180,8 +194,8 @@ namespace MultiScene.Core
         {
             yield return new WaitForEndOfFrame();
             
-            foreach (var _l in startListeners)
-                _l.OnMultiSceneStart();
+            foreach (var _l in startOrderedListeners)
+                _l.listener.OnMultiSceneStart();
             
             PostSceneLoaded?.Invoke();
             OnSceneGroupLoaded?.Invoke(activeSceneGroup);
@@ -228,7 +242,7 @@ namespace MultiScene.Core
         /// </summary>
         public void LoadScenes()
         {
-            activeSceneGroup = scenesToLoad;
+            activeSceneGroup = defaultGroup;
             var _scenes = new List<string>();
 
             for (var i = 0; i < SceneManager.sceneCount; i++)

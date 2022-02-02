@@ -23,12 +23,17 @@ namespace MultiScene.Core
         /// </summary>
         [SerializeField] protected SceneGroup loadGroup;
 
+        private bool IsLoading { get; set; }
+        
+        
         /// <summary>
         /// Loads a scene group.
         /// </summary>
         public virtual void LoadSceneGroup()
         {
+            if (IsLoading) return;
             MultiSceneElly.GetComponentFromAllScenes<MultiSceneManager>().LoadScenes(loadGroup);
+            IsLoading = true;
         }
     }
 }

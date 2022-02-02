@@ -7,9 +7,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using JTools.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -46,7 +44,7 @@ namespace MultiScene.Core.Editor
         
         private void LoadActiveSceneGroupInEditor()
         {
-            var _sceneList = multiSceneManager.scenesToLoad.scenes;
+            var _sceneList = multiSceneManager.defaultGroup.scenes;
             var _paths = GetScenePaths();
             if (_sceneList.Count <= 0) return;
 
@@ -67,7 +65,7 @@ namespace MultiScene.Core.Editor
 
         private void LoadAdditiveActiveSceneGroupInEditor()
         {
-            var _sceneList = multiSceneManager.scenesToLoad.scenes;
+            var _sceneList = multiSceneManager.defaultGroup.scenes;
             var _paths = GetScenePaths();
             if (_sceneList.Count <= 0) return;
 
