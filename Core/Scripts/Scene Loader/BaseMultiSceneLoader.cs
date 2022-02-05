@@ -1,16 +1,6 @@
-/*
- * 
- *  Multi-Scene Workflow
- *							  
- *	Base Multi-Scene Loader
- *      A base class that you can extend to load scenes in a variety of ways.
- *			
- *  Written by:
- *      Jonathan Carter
- *		
- *	Last Updated: 05/11/2021 (d/m/y)							
- * 
- */
+// Multi Scene - Core
+// Base class for loading scene groups easily
+// Author: Jonathan Carter - https://carter.games
 
 using UnityEngine;
 
@@ -23,11 +13,15 @@ namespace MultiScene.Core
         /// </summary>
         [SerializeField] protected SceneGroup loadGroup;
 
+        
+        /// <summary>
+        /// Gets whether or not the scene group is loading or not...
+        /// </summary>
         private bool IsLoading { get; set; }
         
         
         /// <summary>
-        /// Loads a scene group.
+        /// Loads a scene group...
         /// </summary>
         public virtual void LoadSceneGroup()
         {

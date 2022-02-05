@@ -1,9 +1,6 @@
-﻿// ----------------------------------------------------------------------------
-// MultiSceneManagerEditor.cs
-// 
-// Author: Jonathan Carter (A.K.A. J)
-// Date: 10/11/2021
-// ----------------------------------------------------------------------------
+﻿// Multi Scene - Core
+// The editor script for the multi scene manager. 
+// Author: Jonathan Carter - https://carter.games
 
 using System;
 using System.Collections.Generic;

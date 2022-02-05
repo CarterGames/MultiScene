@@ -1,16 +1,6 @@
-﻿/*
- * 
- *  Multi-Scene Workflow
- *							  
- *	Multi-Scene Awake Interface
- *      A interface to implement when you want logic to run first once a scene group has loaded via the multi-scene manager.
- *			
- *  Written by:
- *      Jonathan Carter
- *		
- *	Last Updated: 05/11/2021 (d/m/y)							
- * 
- */
+﻿// Multi Scene - Core
+// A interface to implement when you want logic to run first once a scene group has loaded via the multi-scene manager.
+// Author: Jonathan Carter - https://carter.games
 
 namespace MultiScene.Core
 {

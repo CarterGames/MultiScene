@@ -1,9 +1,6 @@
-﻿// ----------------------------------------------------------------------------
-// SceneGroupEditor.cs
-// 
-// Author: Jonathan Carter (A.K.A. J)
-// Date: 14/09/2021
-// ----------------------------------------------------------------------------
+﻿// Multi Scene - Core
+// The editor code for the custom inspector any scene group scriptable object.
+// Author: Jonathan Carter - https://carter.games
 
 using System;
 using System.Collections.Generic;

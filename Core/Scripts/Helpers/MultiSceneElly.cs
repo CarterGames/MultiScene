@@ -1,16 +1,6 @@
-﻿/*
- * 
- *  Multi-Scene Workflow
- *							  
- *	Multi Scene
- *      A J-Tools class that allows you to get objects in the scene as well as move objects between scenes.
- *			
- *  Written by:
- *      Jonathan Carter
- *		
- *	Last Updated: 05/11/2021 (d/m/y)							
- * 
- */
+﻿// Multi Scene - Core
+// A class to help you get references between scenes.
+// Author: Jonathan Carter - https://carter.games
 
 using System.Collections.Generic;
 using UnityEngine;
