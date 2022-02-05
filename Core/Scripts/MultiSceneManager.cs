@@ -1,16 +1,6 @@
-/*
- * 
- *  Multi-Scene Workflow
- *							  
- *	Multi-Scene Manager
- *      Handles the loading and unloading of scenes.
- *			
- *  Written by:
- *      Jonathan Carter
- *		
- *	Last Updated: 05/11/2021 (d/m/y)							
- * 
- */
+// Multi Scene - Core
+// Main manager class which handles scene management for the package
+// Author: Jonathan Carter - https://carter.games
 
 using System;
 using System.Collections;
@@ -35,61 +25,73 @@ namespace MultiScene.Core
 
         private static MultiSceneManager main;
 
+        
+        /// <summary>
+        /// The default scene group to load
+        /// </summary>
         public SceneGroup defaultGroup;
+        
+        /// <summary>
+        /// Runs before a scene group loads
+        /// </summary>
         public UnityEvent BeforeScenesLoaded;
+        
+        /// <summary>
+        /// Runs after a scene group has loaded & all listeners have been called
+        /// </summary>
         public UnityEvent PostSceneLoaded;
 
+        /// <summary>
+        /// Runs when each scene is loaded
+        /// </summary>
+        public static Action<string> OnSceneLoaded;
+        
+        /// <summary>
+        /// Runs when a scene group has loaded
+        /// </summary>
+        public static Action<SceneGroup> OnSceneGroupLoaded;
+        
+        
+        #region Getters / Setters
+        
         public bool LoadOnAwake
         {
             get => loadOnAwake;
             set => loadOnAwake = value;
         }
         
-        public static Action<string> OnSceneLoaded;
-        public static Action<SceneGroup> OnSceneGroupLoaded;
-        public SceneGroup GetActiveGroup => activeSceneGroup;
+        public static SceneGroup GetActiveGroup => main.activeSceneGroup;
+        public static bool IsSceneInGroup(string sceneName) => main.activeSceneGroup.scenes.Contains(sceneName);
+        public static bool IsSceneInGroup(SceneGroup group, string sceneName) => group.scenes.Contains(sceneName);
         
-
-
-        /// <summary>
-        /// Checks to see if the scene by the name entered currently active
-        /// </summary>
-        /// <param name="sceneName">The scene to find</param>
-        /// <returns>Bool</returns>
+        
         public static bool IsSceneLoaded(string sceneName)
         {
             if (!main.hasCachedScenesList)
-                main.GetActiveSceneNames();
+                main.UpdateActiveSceneNames();
 
             return main.cachedActiveSceneNames.Contains(sceneName);
         }
         
         
         /// <summary>
-        /// Checks to see if the scene by the name entered is in the group entered
+        /// Sets the active group to the group entered...
         /// </summary>
-        /// <param name="sceneName">The scene to find</param>
-        /// <returns>Bool</returns>
-        public static bool IsSceneInGroup(string sceneName)
+        /// <param name="group">the group to set to</param>
+        public void SetGroup(SceneGroup group)
         {
-            return main.activeSceneGroup.scenes.Contains(sceneName);
+            activeSceneGroup = group;
+            UpdateActiveSceneNames();
         }
-
-        /// <summary>
-        /// Checks to see if the scene by the name entered is in the group entered
-        /// </summary>
-        /// <param name="group">The group to check in</param>
-        /// <param name="sceneName">The scene to find</param>
-        /// <returns>Bool</returns>
-        public static bool IsSceneInGroup(SceneGroup group, string sceneName)
-        {
-            return group.scenes.Contains(sceneName);
-        }
+        
+        
+        #endregion
+        
 
         /// <summary>
         /// Gets the list of active scenes and returns them as a string. 
         /// </summary>
-        public List<string> GetActiveSceneNames()
+        public List<string> UpdateActiveSceneNames()
         {
             var _list = new List<string>();
             
@@ -101,7 +103,9 @@ namespace MultiScene.Core
             return cachedActiveSceneNames;
         }
         
-
+        
+        #region Unity Methods
+        
         private void Awake()
         {
             if (main == null)
@@ -120,17 +124,11 @@ namespace MultiScene.Core
             SceneManager.sceneLoaded -= CallListeners;
             StopAllCoroutines();
         }
-
-
-        /// <summary>
-        /// Sets the active group to the group entered...
-        /// </summary>
-        /// <param name="group"></param>
-        public void SetGroup(SceneGroup group)
-        {
-            activeSceneGroup = group;
-            GetActiveSceneNames();
-        }
+        
+        #endregion
+        
+        
+        #region Listener Handling
         
         
         /// <summary>
@@ -144,7 +142,7 @@ namespace MultiScene.Core
                 return;
 
             GetSortedListeners();
-            GetActiveSceneNames();
+            UpdateActiveSceneNames();
             
             StartCoroutine(CallMultiSceneAwake());
             SceneManager.sceneLoaded -= CallListeners;
@@ -167,7 +165,7 @@ namespace MultiScene.Core
             yield return new WaitForEndOfFrame();
             
             foreach (var _l in awakeOrderedListeners)
-                _l.listener.OnMultiSceneAwake();
+                _l.Listener.OnMultiSceneAwake();
 
             StartCoroutine(CallMultiSceneEnable());
         }
@@ -181,7 +179,7 @@ namespace MultiScene.Core
             yield return new WaitForEndOfFrame();
             
             foreach (var _l in enableOrderedListeners)
-                _l.listener.OnMultiSceneEnable();
+                _l.Listener.OnMultiSceneEnable();
 
             StartCoroutine(CallMultiSceneStart());
         }
@@ -195,13 +193,75 @@ namespace MultiScene.Core
             yield return new WaitForEndOfFrame();
             
             foreach (var _l in startOrderedListeners)
-                _l.listener.OnMultiSceneStart();
+                _l.Listener.OnMultiSceneStart();
             
             PostSceneLoaded?.Invoke();
             OnSceneGroupLoaded?.Invoke(activeSceneGroup);
         }
+        
+        
+        #endregion
 
+        
+        #region Scene Management
+        
+        /// <summary>
+        /// Loads the scenes in the inspector selected scene group... overriding any existing active scenes. 
+        /// </summary>
+        public void LoadScenes() => LoadScenes(defaultGroup);
+        
+        /// <summary>
+        /// Loads the scenes in the inspector selected scene group... overriding any existing active scenes. 
+        /// </summary>
+        public void LoadScenes(SceneGroup group) => RunSceneLoading(group);
+        
+        /// <summary>
+        /// Loads the scenes in the selected scene group but leaves the base scene as is...
+        /// </summary>
+        public void LoadScenesKeepBase(SceneGroup group) => RunSceneLoading(group, true);
+        
+        /// <summary>
+        /// Loads the scenes in the selected scene group...overriding any existing active scenes. 
+        /// </summary>
+        private void RunSceneLoading(SceneGroup group, bool? keepBase = false)
+        {
+            activeSceneGroup = group;
+            
+            var _scenes = new List<string>();
+            var _baseScene = SceneManager.GetActiveScene().name;
 
+            if (keepBase == true)
+                UnloadAllAdditiveScenes();
+            else
+            {
+                UnloadAllActiveScenes();
+
+                for (var i = 0; i < SceneManager.sceneCount; i++)
+                    _scenes.Add(SceneManager.GetSceneAt(i).name);
+            }
+            
+            for (var i = 0; i < activeSceneGroup.scenes.Count; i++)
+            {
+                var _s = activeSceneGroup.scenes[i];
+
+                if (i.Equals(activeSceneGroup.scenes.Count - 1))
+                    SceneManager.sceneLoaded += CallListeners;
+                   
+                if (keepBase == true)
+                    if (_s.Equals(_baseScene)) continue;
+               
+                if (_scenes.Contains(_s)) continue;
+
+                SceneManager.LoadSceneAsync(_s, i.Equals(0) 
+                    ? LoadSceneMode.Single 
+                    : LoadSceneMode.Additive);
+                
+                OnSceneLoaded?.Invoke(_s);
+            }
+            
+            OnSceneGroupLoaded?.Invoke(activeSceneGroup);
+            UpdateActiveSceneNames();
+        }
         
         /// <summary>
         /// Unloads all the active scenes
@@ -216,7 +276,6 @@ namespace MultiScene.Core
             foreach (var _s in _scenes)
                 SceneManager.UnloadSceneAsync(_s);
         }
-        
         
         /// <summary>
         /// Unloads all the additive scenes loaded but keeps the base scene as is unless overridden with a load method...
@@ -235,96 +294,7 @@ namespace MultiScene.Core
             foreach (var _s in _scenes)
                 SceneManager.UnloadSceneAsync(_s);
         }
-
-
-        /// <summary>
-        /// Loads the scenes in the inspector selected scene group... overriding any existing active scenes. 
-        /// </summary>
-        public void LoadScenes()
-        {
-            activeSceneGroup = defaultGroup;
-            var _scenes = new List<string>();
-
-            for (var i = 0; i < SceneManager.sceneCount; i++)
-                _scenes.Add(SceneManager.GetSceneAt(i).name);
-
-            for (var i = 0; i < activeSceneGroup.scenes.Count; i++)
-            {
-                var _s = activeSceneGroup.scenes[i];
-
-                if (i.Equals(activeSceneGroup.scenes.Count - 1))
-                    SceneManager.sceneLoaded += CallListeners;
-                    
-                if (_scenes.Contains(_s)) continue;
-                
-                if (i.Equals(0))
-                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Single);
-                else
-                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Additive);
-            }
-            
-            GetActiveSceneNames();
-        }
         
-        /// <summary>
-        /// Loads the scenes in the selected scene group...overriding any existing active scenes. 
-        /// </summary>
-        public void LoadScenes(SceneGroup group)
-        {
-            activeSceneGroup = group;
-            var _scenes = new List<string>();
-
-             for (var i = 0; i < SceneManager.sceneCount; i++)
-                 _scenes.Add(SceneManager.GetSceneAt(i).name);
-            
-
-            for (var i = 0; i < activeSceneGroup.scenes.Count; i++)
-            {
-                var _s = activeSceneGroup.scenes[i];
-
-                if (i.Equals(activeSceneGroup.scenes.Count - 1))
-                    SceneManager.sceneLoaded += CallListeners;
-                    
-                if (_scenes.Contains(_s)) continue;
-                
-                if (i.Equals(0))
-                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Single);
-                else
-                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Additive);
-            }
-            
-            GetActiveSceneNames();
-        }
-        
-        
-        /// <summary>
-        /// Loads the scenes in the selected scene group but leaves the base scene as is...
-        /// </summary>
-        public void LoadScenesKeepBase(SceneGroup group)
-        {
-            activeSceneGroup = group;
-            var _activeScene = SceneManager.GetActiveScene().name;
-            
-            UnloadAllAdditiveScenes();
-
-            for (var i = 0; i < activeSceneGroup.scenes.Count; i++)
-            {
-                var _s = activeSceneGroup.scenes[i];
-
-                if (i.Equals(activeSceneGroup.scenes.Count - 1))
-                {
-                    SceneManager.sceneLoaded += CallListeners;
-                }
-
-                if (_s.Equals(_activeScene)) continue;
-                
-                if (i.Equals(0))
-                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Single);
-                else
-                    SceneManager.LoadSceneAsync(_s, LoadSceneMode.Additive);
-            }
-            
-            GetActiveSceneNames();
-        }
+        #endregion
     }
 }

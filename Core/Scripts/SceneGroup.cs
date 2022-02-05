@@ -1,16 +1,6 @@
-﻿/*
- * 
- *  Multi-Scene Workflow
- *							  
- *	Scene Group
- *      A scriptable object that allows you to group scenes together to load in the multi-scene manager.
- *			
- *  Written by:
- *      Jonathan Carter
- *		
- *	Last Updated: 05/11/2021 (d/m/y)							
- * 
- */
+﻿// Multi Scene - Core
+// A scriptable object that allows you to group scenes together to load in the multi-scene manager
+// Author: Jonathan Carter - https://carter.games
 
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +8,7 @@ using UnityEngine;
 
 namespace MultiScene.Core
 {
-    [CreateAssetMenu(fileName = "Scene Group", menuName = "Multi-Scene/Scene Group", order = 0)]
+    [CreateAssetMenu(fileName = "Scene Group", menuName = "Multi Scene/Scene Group", order = 0)]
     public class SceneGroup : ScriptableObject
     {
         /// <summary>
