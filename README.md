@@ -18,6 +18,9 @@ A library to help developers create Unity games that split elements of the game 
 - More scene loading options
 - Additional attributes for more flexiability
 
+### Limitations
+- At present scenes don't wait for the last group to be fully unloaded before the new group is loaded in. Be aware of this when using this system in your games.
+
 ## How To Install
 Download the latest version of the project via the packages section of this repo & un-zip the downloaded files. Then either:
 1. Run the .unitypackage and proceed to follow the steps in import window in Unity
