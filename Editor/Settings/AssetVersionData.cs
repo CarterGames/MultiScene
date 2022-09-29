@@ -14,6 +14,6 @@
         /// <summary>
         /// The date this release of the asset was submitted for release...
         /// </summary>
-        public static string ReleaseDate => "TBC";
+        public static string ReleaseDate => "27/09/2022";
     }
 }
