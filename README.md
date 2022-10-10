@@ -2,7 +2,7 @@
 
 
 # Multi-Scene
-> Version 0.2.0
+> Version 0.2.1
 
 
 A library to help developers create Unity games that split elements of the game into multiple scenes.
