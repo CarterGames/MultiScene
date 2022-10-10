@@ -7,6 +7,11 @@
 
 A library to help developers create Unity games that split elements of the game into multiple scenes.
 
+## Badges
+![CodeFactor](https://www.codefactor.io/repository/github/cartergames/multiscene/badge?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/CarterGames/MultiScene/total?style=for-the-badge)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/CarterGames/MultiScene?style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/CarterGames/MultiScene?style=for-the-badge)
 
 ## Features
 - Cross scene referencing
