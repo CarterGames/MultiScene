@@ -1,9 +1,9 @@
-﻿// Multi Scene - Core
-// A interface to implement when you want logic to run after the awake interface implementations once a scene group has loaded via the multi-scene manager.
-// Author: Jonathan Carter - https://carter.games
-
-namespace CarterGames.Experimental.MultiScene
+﻿namespace CarterGames.Experimental.MultiScene
 {
+    /// <summary>
+    /// An interface for syncing logic to when scene groups are loaded.
+    /// </summary>
+    /// <remarks>Enable is run second out of the interfaces.</remarks>
     public interface IMultiSceneEnable
     {
         void OnMultiSceneEnable();

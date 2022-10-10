@@ -1,15 +1,11 @@
-// ----------------------------------------------------------------------------
-// Evt.cs
-// 
-// Description: A selection of classes to handle most use cases you'll need
-//              for events in your games.
-// ----------------------------------------------------------------------------
-
 using System;
 
 namespace CarterGames.Experimental.MultiScene
 {
-    public class MultiSceneEvt
+    /// <summary>
+    /// An event class with no params
+    /// </summary>
+    public sealed class MultiSceneEvt
     {
         private event Action Action = delegate { };
 
@@ -38,10 +34,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
     
+    
     /// <summary>
     /// An event class with 1 parameter...
     /// </summary>
-    public class MultiSceneEvt<T>
+    public sealed class MultiSceneEvt<T>
     {
         private event Action<T> Action = delegate { };
 
@@ -70,10 +67,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
     
+    
     /// <summary>
     /// An event class with 2 parameters...
     /// </summary>
-    public class MultiSceneEvt<T1,T2>
+    public sealed class MultiSceneEvt<T1,T2>
     {
         private event Action<T1,T2> Action = delegate { };
 
@@ -102,10 +100,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
     
+    
     /// <summary>
     /// An event class with 3 parameters...
     /// </summary>
-    public class MultiSceneEvt<T1,T2,T3>
+    public sealed class MultiSceneEvt<T1,T2,T3>
     {
         private event Action<T1,T2,T3> Action = delegate { };
 
@@ -134,10 +133,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
     
+    
     /// <summary>
     /// An event class with 4 parameters...
     /// </summary>
-    public class MultiSceneEvt<T1,T2,T3,T4>
+    public sealed class MultiSceneEvt<T1,T2,T3,T4>
     {
         private event Action<T1,T2,T3,T4> Action = delegate { };
 
@@ -166,10 +166,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
 
+    
     /// <summary>
     /// An event class with 5 parameters...
     /// </summary>
-    public class MultiSceneEvt<T1,T2,T3,T4,T5>
+    public sealed class MultiSceneEvt<T1,T2,T3,T4,T5>
     {
         private event Action<T1,T2,T3,T4,T5> Action = delegate { };
 
@@ -199,10 +200,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
     
+    
     /// <summary>
     /// An event class with 6 parameters...
     /// </summary>
-    public class MultiSceneEvt<T1,T2,T3,T4,T5,T6>
+    public sealed class MultiSceneEvt<T1,T2,T3,T4,T5,T6>
     {
         private event Action<T1,T2,T3,T4,T5,T6> Action = delegate { };
 
@@ -232,10 +234,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
     
+    
     /// <summary>
     /// An event class with 7 parameters...
     /// </summary>
-    public class MultiSceneEvt<T1,T2,T3,T4,T5,T6,T7>
+    public sealed class MultiSceneEvt<T1,T2,T3,T4,T5,T6,T7>
     {
         private event Action<T1,T2,T3,T4,T5,T6,T7> Action = delegate { };
 
@@ -265,10 +268,11 @@ namespace CarterGames.Experimental.MultiScene
         public void Clear() => Action = null;
     }
     
+    
     /// <summary>
     /// An event class with 8 parameters...
     /// </summary>
-    public class MultiSceneEvt<T1,T2,T3,T4,T5,T6,T7,T8>
+    public sealed class MultiSceneEvt<T1,T2,T3,T4,T5,T6,T7,T8>
     {
         private event Action<T1,T2,T3,T4,T5,T6,T7,T8> Action = delegate { };
 

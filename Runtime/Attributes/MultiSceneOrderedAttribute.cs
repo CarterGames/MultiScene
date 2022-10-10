@@ -1,8 +1,4 @@
-﻿// Multi Scene - Core
-// The definition of the MultiSceneOrdered attribute.
-// Author: Jonathan Carter - https://carter.games
-
-using System;
+﻿using System;
 
 namespace CarterGames.Experimental.MultiScene
 {
@@ -14,15 +10,29 @@ namespace CarterGames.Experimental.MultiScene
     /// If the interface implementation has no order it will be set to 0 as it is the default, just like in the scripting execution order system in Unity. 
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method)]
-    public class MultiSceneOrderedAttribute : Attribute
+    public sealed class MultiSceneOrderedAttribute : Attribute
     {
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
         public int order;
-
+        
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Constructors
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
+        /// <summary>
+        /// A default ordered attribute.
+        /// </summary>
         public MultiSceneOrderedAttribute()
         {
             order = 0;
         }
         
+        /// <summary>
+        /// A attribute with a defined order.
+        /// </summary>
         public MultiSceneOrderedAttribute(int order = 0)
         {
             this.order = order;

@@ -29,6 +29,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         |   Menu Items
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */         
 
+        /// <summary>
+        /// Shows the scene group loader or focuses on it if it is already open.
+        /// </summary>
         [MenuItem("Tools/Carter Games/Multi Scene/Scene Group Loader")]
         private static void ShowWindow()
         {
@@ -104,6 +107,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         |   Methods
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
+        /// <summary>
+        /// Updates the options for the scene group loader.
+        /// </summary>
         private void UpdateData()
         {
             allCategories.Clear();
@@ -117,6 +123,11 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
         
         
+        /// <summary>
+        /// Geta all the categories that currently have scene groups in them.
+        /// </summary>
+        /// <param name="groups">The groups to search through.</param>
+        /// <returns>A list of categories.</returns>
         private List<GroupCategory> GetValidCategories(out SceneGroup[] groups)
         {
             groups = allGroups.OrderBy(t => t.buttonIndex).ToArray();
@@ -136,6 +147,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Draws all the buttons for the scene groups in the categories required.
+        /// </summary>
         private void DrawGroupsAndButtons()
         {
             EditorGUILayout.Space(4f);
@@ -207,12 +221,18 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Updates the cache of all categories in the asset when called.
+        /// </summary>
         private void UpdateCachedValues()
         {
             allCategories = MultiSceneEditorUtil.Settings.AllGroupCategories;
         }
         
 
+        /// <summary>
+        /// Gets all the scene groups in the project.
+        /// </summary>
         private void GetAllGroups()
         {
             var _assetsFound = AssetDatabase.FindAssets("t:scenegroup", null);
@@ -231,6 +251,10 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
         
         
+        /// <summary>
+        /// Loads a scene group in the editor when called.
+        /// </summary>
+        /// <param name="group">The group to load.</param>
         private static void LoadSceneGroupInEditor(SceneGroup group)
         {
             var _sceneList = new List<string>();
@@ -257,6 +281,10 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
         
         
+        /// <summary>
+        /// Gets the paths for all scenes in the project build settings for use.
+        /// </summary>
+        /// <returns>A list of the paths of the scenes in the build settings.</returns>
         private static List<string> GetScenePaths()
         {
             var sceneNumber = SceneManager.sceneCountInBuildSettings;

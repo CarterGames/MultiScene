@@ -1,13 +1,12 @@
-﻿// Multi Scene - Core
-// A class that handles converting the interface implementations into an ordered list to be executed. 
-// Author: Jonathan Carter - https://carter.games
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace CarterGames.Experimental.MultiScene
 {
+    /// <summary>
+    /// A class to handle sorting ordered listeners.
+    /// </summary>
     public static class OrderedHandler
     {
         /// <summary>

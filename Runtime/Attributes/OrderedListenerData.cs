@@ -12,11 +12,19 @@ namespace CarterGames.Experimental.MultiScene
     /// </summary>
     /// <typeparam name="T">The interface type to use</typeparam>
     [Serializable]
-    public class OrderedListenerData<T>
+    public sealed class OrderedListenerData<T>
     {
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
         [SerializeField] private int order;
         [SerializeField] private T listener;
 
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Properties
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
         /// <summary>
         /// The order to use for this listener
         /// </summary>
@@ -27,6 +35,9 @@ namespace CarterGames.Experimental.MultiScene
         /// </summary>
         public T Listener => listener;
         
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Constructors
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
         /// <summary>
         /// Constructor | Implements the order & listener automatically

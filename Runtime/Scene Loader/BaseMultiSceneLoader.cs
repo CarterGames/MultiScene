@@ -1,11 +1,13 @@
-// Multi Scene - Core
-// Base class for loading scene groups easily
-// Author: Jonathan Carter - https://carter.games
-
 using UnityEngine;
 
 namespace CarterGames.Experimental.MultiScene
 {
+    /// <summary>
+    /// Provides a base set of logic for loading a scene group to inherit from and override as needed.
+    /// </summary>
+    /// <remarks>
+    /// Not abstract as it can be used as is for basic implementations.
+    /// </remarks>
     public class BaseMultiSceneLoader : MonoBehaviour
     {
         /// <summary>

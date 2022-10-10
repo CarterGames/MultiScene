@@ -9,12 +9,22 @@ using UnityEngine;
 
 namespace CarterGames.Experimental.MultiScene
 {
-    public class MsLog
+    /// <summary>
+    /// A logging class for messages within the asset.
+    /// </summary>
+    public sealed class MsLog
     {
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Constants
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */ 
+        
         private const string LogPrefix = "<color=#9379e0><b>Multi Scene</b></color> | ";
         private const string WarningPrefix = "<color=#D6BA64><b>Warning</b></color> | ";
         private const string ErrorPrefix = "<color=#E77A7A><b>Error</b></color> | ";
 
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */ 
         
         /// <summary>
         /// Displays a normal debug message for the build versions asset...

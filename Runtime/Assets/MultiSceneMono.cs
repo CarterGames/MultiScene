@@ -2,5 +2,8 @@
 
 namespace CarterGames.Experimental.MultiScene
 {
-    public class MultiSceneMono : MonoBehaviour { }
+    /// <summary>
+    /// Used to access a MonoBehaviour for classes that don't derive from it. 
+    /// </summary>
+    public sealed class MultiSceneMono : MonoBehaviour { }
 }

@@ -8,15 +8,14 @@ using UnityEngine;
 namespace CarterGames.Experimental.MultiScene.Editor
 {
     /// <summary>
-    /// Custom Inspector for the SceneGroup scriptable object..
+    /// Custom Inspector for the SceneGroup scriptable object.
     /// </summary>
     [CustomEditor(typeof(SceneGroup))]
     public sealed class SceneGroupEditor : UnityEditor.Editor
     {
-        
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Fields  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */  
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */      
 
         private SerializedProperty groupIndex;
         private SerializedProperty group;
@@ -33,9 +32,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         private string[] allGroupOptions;
         private string[] buildSettingsOptions;
 
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Unity Methods  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */       
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Unity Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */          
         
         private void OnEnable()
         {
@@ -85,9 +84,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
             serializedObject.Update();
         }
         
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Draw Methods  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */   
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Draw Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */      
 
         /// <summary>
         /// Renders the title section of the editor...
@@ -102,6 +101,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
         
+        /// <summary>
+        /// Draws the script field for this editor.
+        /// </summary>
         private void DrawScriptSection()
         {
             GUILayout.Space(4.5f);
@@ -117,6 +119,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
         
 
+        /// <summary>
+        /// Draws a help box with some important info to show.
+        /// </summary>
         private void DrawHelpBox()
         {
             EditorGUILayout.BeginVertical();
@@ -125,6 +130,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Shows the meta data section of the group.
+        /// </summary>
         private void DrawMetaData()
         {
             GUILayout.Space(1.5f);
@@ -153,6 +161,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Draws the tool buttons section.
+        /// </summary>
         private void DrawToolsSection()
         {
             GUILayout.Space(1.5f);
@@ -174,6 +185,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Draws the scene field section.
+        /// </summary>
         private void DrawScenesSection()
         {
             GUILayout.Space(1.5f);
@@ -220,6 +234,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Draws the danger zone section.
+        /// </summary>
         private void DrawDangerZoneSection()
         {
             GUILayout.Space(1.5f);
@@ -358,6 +375,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
             scenes.GetArrayElementAtIndex(scenes.arraySize - 1).FindPropertyRelative("isInBuildSettings").boolValue = false;
         }
         
+        
         /// <summary>
         /// Adds a new element to the scenes list that is blank.
         /// </summary>
@@ -371,6 +389,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
             scenes.serializedObject.Update();
         }
 
+        
         /// <summary>
         /// Resets the scenes list to a new list.
         /// </summary>
@@ -385,6 +404,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
         
         
+        /// <summary>
+        /// Loads the scene group in the editor on call.
+        /// </summary>
         private void LoadSceneGroupInEditor()
         {
             var _sceneList = new List<string>();
@@ -417,9 +439,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
             MultiSceneEditorEvents.SceneGroups.OnSceneGroupLoadedInEditor.Raise();
         }
 
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Utility Methods  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Utility Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */    
 
         private void RefreshCategoryOptions()
         {

@@ -9,5 +9,8 @@ using UnityEngine;
 
 namespace CarterGames.Experimental.MultiScene
 {
+    /// <summary>
+    /// Used to define a scriptable object in the asset.
+    /// </summary>
     public class MultiSceneAsset : ScriptableObject { }
 }

@@ -3,30 +3,32 @@ using CarterGames.Experimental.MultiScene.Editor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 namespace CarterGames.Experimental.MultiScene
 {
+    /// <summary>
+    /// The main manager class for the asset. Used to load scenes instead of the SceneManager class. 
+    /// </summary>
     public static class MultiSceneManager
     {
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Fields  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
         private const string PlaceholderSceneName = "Multi Scene Placeholder Scene";
+        private const string MonoObjectName = "Multi Scene (Mono Reference)";
         private static List<string> _activeSceneNames;
         private static bool _hasCachedScenesList;
-        private static SceneGroup _activeSceneGroup;
         private static MultiSceneSettingsAsset _settings;
         private static MultiSceneMono _mono;
 
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Properties  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Properties
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
         /// <summary>
         /// The default scene group to load
         /// </summary>
-        public static SceneGroup ActiveSceneGroup => _activeSceneGroup;
+        public static SceneGroup ActiveSceneGroup { get; private set; }
 
 
         /// <summary>
@@ -51,16 +53,16 @@ namespace CarterGames.Experimental.MultiScene
             get
             {
                 if (_mono != null) return _mono;
-                var go = new GameObject("Multi Scene (Mono Reference)");
+                var go = new GameObject(MonoObjectName);
                 go.AddComponent<MultiSceneMono>();
                 _mono = go.GetComponent<MultiSceneMono>();
                 return _mono;
             }
         }
         
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Events  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Events
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
         /// <summary>
         /// Runs before a scene group loads
@@ -93,12 +95,32 @@ namespace CarterGames.Experimental.MultiScene
         public static MultiSceneEvt<SceneGroup> OnSceneGroupLoadedWithCtx = new MultiSceneEvt<SceneGroup>();
         
         
-        
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Utility Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
-        public static bool IsSceneInGroup(string sceneName) => _activeSceneGroup.ContainsScene(sceneName);
+        /// <summary>
+        /// Gets whether or not a scene of the name entered is in the current group.
+        /// </summary>
+        /// <param name="sceneName">The scene name to lookup.</param>
+        /// <returns>True/False</returns>
+        public static bool IsSceneInGroup(string sceneName) => ActiveSceneGroup.ContainsScene(sceneName);
+        
+        
+        /// <summary>
+        /// Gets whether or not a scene is in the group requested.
+        /// </summary>
+        /// <param name="group">The group to look through.</param>
+        /// <param name="sceneName">The scene name to lookup.</param>
+        /// <returns>True/False</returns>
         public static bool IsSceneInGroup(SceneGroup group, string sceneName) => group.ContainsScene(sceneName);
         
         
+        /// <summary>
+        /// Returns whether or not a scene of the name entered is loaded in the current scene group.
+        /// </summary>
+        /// <param name="sceneName">The scene name to lookup.</param>
+        /// <returns>True/False</returns>
         public static bool IsSceneLoaded(string sceneName)
         {
             if (!_hasCachedScenesList)
@@ -114,7 +136,7 @@ namespace CarterGames.Experimental.MultiScene
         /// <param name="group">the group to set to</param>
         public static void SetGroup(SceneGroup group)
         {
-            _activeSceneGroup = group;
+            ActiveSceneGroup = group;
             UpdateActiveSceneNames();
         }
         
@@ -133,9 +155,9 @@ namespace CarterGames.Experimental.MultiScene
             _hasCachedScenesList = true;
         }
 
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Scene Management  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Scene Management Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
         /// <summary>
         /// Initialises with the scene group last loaded or the default one based on the asset settings...
@@ -152,7 +174,18 @@ namespace CarterGames.Experimental.MultiScene
         }
         
 
+        /// <summary>
+        /// Loads all scenes in the start group, reloading and dup scenes as it goes by default.
+        /// </summary>
+        /// <param name="reloadDupScenes">Should scenes in the start group that are loaded already be reloaded?</param>
         public static void LoadScenes(bool reloadDupScenes = true) => LoadScenes(Settings.StartGroup, reloadDupScenes);
+        
+        
+        /// <summary>
+        /// Loads all the scenes in the requested group, reloading and dup scenes as it goes by default.
+        /// </summary>
+        /// <param name="group">The group to load.</param>
+        /// <param name="reloadDupScenes">Should scenes in the start group that are loaded already be reloaded?</param>
         public static void LoadScenes(SceneGroup group, bool reloadDupScenes = true) => RunSceneLoading(group, reloadDupScenes);
 
 
@@ -167,7 +200,7 @@ namespace CarterGames.Experimental.MultiScene
                 return;
             }
                 
-            _activeSceneGroup = group;
+            ActiveSceneGroup = group;
 
             var loadedScenes = new List<string>();
 
@@ -179,12 +212,12 @@ namespace CarterGames.Experimental.MultiScene
 
 
             // Loads the new scenes...
-            for (var i = 0; i < _activeSceneGroup.scenes.Count; i++)
+            for (var i = 0; i < ActiveSceneGroup.scenes.Count; i++)
             {
-                var sceneData = _activeSceneGroup.scenes[i];
+                var sceneData = ActiveSceneGroup.scenes[i];
 
                 // Calls for the listeners to fire when the last scene in the group is loaded...
-                if (i.Equals(_activeSceneGroup.scenes.Count - 1))
+                if (i.Equals(ActiveSceneGroup.scenes.Count - 1))
                     SceneManager.sceneLoaded += ListenerHandler.CallListeners;
                 
                 // Skips if scenes are not the be reloaded...

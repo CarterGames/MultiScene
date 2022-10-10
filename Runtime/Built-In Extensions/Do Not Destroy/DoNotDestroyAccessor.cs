@@ -11,9 +11,15 @@ namespace CarterGames.Experimental.MultiScene.DoNotDestroy
     /// </summary>
     public sealed class DoNotDestroyAccessor : MonoBehaviour
     { 
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
         private static DoNotDestroyAccessor _instance;
         
-        
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         private static void Initialise()

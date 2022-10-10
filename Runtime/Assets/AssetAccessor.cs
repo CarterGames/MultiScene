@@ -4,25 +4,22 @@ using UnityEngine;
 
 namespace CarterGames.Experimental.MultiScene
 {
+    /// <summary>
+    /// Allows access to any scriptable object in this asset.
+    /// </summary>
     public static class AssetAccessor
     {
-        //
-        //
-        //  Fields
-        //
-        //
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
         // a cache of all the assets found...
         private static MultiSceneAsset[] assets;
 
-        
-        //
-        //
-        //  Properties
-        //
-        //
-        
-        
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Properties
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+
         /// <summary>
         /// Gets all the assets from the build versions asset...
         /// </summary>
@@ -36,13 +33,9 @@ namespace CarterGames.Experimental.MultiScene
             }
         }
 
-        
-        //
-        //
-        //  Methods
-        //
-        //
-        
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
         /// <summary>
         /// Gets the Build Versions Asset requested...

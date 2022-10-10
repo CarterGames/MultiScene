@@ -6,8 +6,15 @@ using UnityEngine.SceneManagement;
 
 namespace CarterGames.Experimental.MultiScene
 {
+    /// <summary>
+    /// Handles the logic for running the listeners when called.
+    /// </summary>
     public static class ListenerHandler
     {
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
         private const string AwakeMethodName = "OnMultiSceneAwake";
         private const string EnableMethodName = "OnMultiSceneEnable";
         private const string StartMethodName = "OnMultiSceneStart";
@@ -17,7 +24,13 @@ namespace CarterGames.Experimental.MultiScene
         private static List<OrderedListenerData<IMultiSceneEnable>> _enableOrderedListeners;
         private static List<OrderedListenerData<IMultiSceneStart>> _startOrderedListeners;
 
-
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
+        /// <summary>
+        /// Assigns the sorted lists for use. 
+        /// </summary>
         private static void GetSortedListeners()
         {
             _awakeOrderedListeners = OrderedHandler.OrderListeners(MultiSceneRef.GetComponentsFromAllScenes<IMultiSceneAwake>(), AwakeMethodName); 

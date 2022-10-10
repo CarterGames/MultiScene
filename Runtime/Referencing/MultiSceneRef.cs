@@ -241,7 +241,7 @@ namespace CarterGames.Experimental.MultiScene
 
             foreach (var scene in s)
                 _sceneObjects.AddRange(SceneManager.GetSceneByName(scene).GetRootGameObjects());
-
+            
             foreach (var _go in _sceneObjects)
                 _validObjectsFromScene.AddRange(_go.GetComponentsInChildren<T>(true));
 
@@ -258,9 +258,15 @@ namespace CarterGames.Experimental.MultiScene
         {
             var _allOfType = GetComponentsFromActiveScene<T>();
 
-            return _allOfType.Count > 0 
-                ? _allOfType[0] 
-                : default;
+            if (_allOfType.Count > 0)
+            {
+                return _allOfType[0];
+            }
+            else
+            {
+                MsLog.Error("Unable To Find Any of Type In Scene");
+                return default;
+            }
         }
         
         
@@ -274,9 +280,15 @@ namespace CarterGames.Experimental.MultiScene
         {
             var _allOfType = GetComponentsFromThisScene<T>(obj);
 
-            return _allOfType.Count > 0 
-                ? _allOfType[0] 
-                : default;
+            if (_allOfType.Count > 0)
+            {
+                return _allOfType[0];
+            }
+            else
+            {
+                MsLog.Error("Unable To Find Any of Type In Scene");
+                return default;
+            }
         }
         
         
@@ -289,9 +301,15 @@ namespace CarterGames.Experimental.MultiScene
         {
             var _allOfType = GetComponentsFromAllScenes<T>();
 
-            return _allOfType.Count > 0 
-                ? _allOfType[0] 
-                : default;
+            if (_allOfType.Count > 0)
+            {
+                return _allOfType[0];
+            }
+            else
+            {
+                MsLog.Error("Unable To Find Any of Type In Scene");
+                return default;
+            }
         }
         
         
@@ -314,10 +332,6 @@ namespace CarterGames.Experimental.MultiScene
                 MsLog.Error("Unable To Find Any of Type In Scene");
                 return default;
             }
-            
-            // return _allOfType.Count > 0 
-            //     ? _allOfType[0] 
-            //     : default;
         }
         
         
@@ -340,10 +354,6 @@ namespace CarterGames.Experimental.MultiScene
                 MsLog.Error("Unable To Find Any of Type In Scene");
                 return default;
             }
-            
-            // return _allOfType.Count > 0 
-            //     ? _allOfType[0] 
-            //     : default;
         }
     }
 }

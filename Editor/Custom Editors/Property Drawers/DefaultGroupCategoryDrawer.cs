@@ -3,20 +3,22 @@ using UnityEngine;
 
 namespace CarterGames.Experimental.MultiScene.Editor
 {
+    /// <summary>
+    /// Draws a group category in a single row for each of use. 
+    /// </summary>
     [CustomPropertyDrawer(typeof(DefaultGroupCategory))]
-    public class DefaultGroupCategoryDrawer : PropertyDrawer
+    public sealed class DefaultGroupCategoryDrawer : PropertyDrawer
     {
-        
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Fields  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */ 
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */ 
 
         private static SerializedProperty _nameProp;
         private static SerializedProperty _indexProp;
         
-/* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
- {  Drawer Methods  }
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── */    
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Drawer Method
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */ 
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

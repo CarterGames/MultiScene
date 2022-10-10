@@ -4,13 +4,26 @@ using UnityEngine;
 
 namespace CarterGames.Experimental.MultiScene.Editor
 {
+    /// <summary>
+    /// Handles the settings window for the asset.
+    /// </summary>
     public static class MultiSceneSettings
     {
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Fields
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
         private static SettingsProvider Provider;
         private static SerializedObject settingsAssetObject;
         private static bool ListeningToEvents;
 
-
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Properties
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
+        /// <summary>
+        /// Gets the settings asset in the project as a SerializedObject.
+        /// </summary>
         public static SerializedObject SettingsAssetObject
         {
             get
@@ -21,14 +34,27 @@ namespace CarterGames.Experimental.MultiScene.Editor
             }
         }
 
-
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Menu Items
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
+        /// <summary>
+        /// The menu item for opening the settings window.
+        /// </summary>
         [MenuItem("Tools/Carter Games/Multi Scene/Edit Settings", priority = 0)]
         public static void OpenSettings()
         {
             SettingsService.OpenProjectSettings("Project/Carter Games/Multi Scene");
         }
 
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Methods
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
+        
+        /// <summary>
+        /// Subs to any events needed if they are not already subs to them.
+        /// </summary>
         private static void ListenForEvents()
         {
             if (ListeningToEvents) return;
@@ -37,12 +63,18 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Resets the settings asset object.
+        /// </summary>
         private static void ClearSettingsAsset()
         {
             settingsAssetObject = null;
         }
         
 
+        /// <summary>
+        /// Handles the settings window in the engine.
+        /// </summary>
         [SettingsProvider]
         public static SettingsProvider MultiSceneSettingsDrawer()
         {
@@ -90,6 +122,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
+        /// <summary>
+        /// Draws the info section of the window.
+        /// </summary>
         private static void DrawInfo()
         {
             EditorGUILayout.BeginVertical("HelpBox");
@@ -105,7 +140,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
-
+        /// <summary>
+        /// Draws the general options section of the window.
+        /// </summary>
         private static void DrawGeneralOptions()
         {
             EditorGUILayout.BeginVertical("HelpBox");
@@ -134,7 +171,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
 
 
-        
+        /// <summary>
+        /// Draws the scene group options section of the window.
+        /// </summary>
         private static void DrawSceneGroupOptions()
         {
             EditorGUILayout.BeginVertical("HelpBox");
@@ -163,7 +202,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
         
         
-        
+        /// <summary>
+        /// Draws the scene group category section of the window.
+        /// </summary>
         private static void DrawSceneGroupCategoryOptions()
         {
             EditorGUILayout.BeginVertical("HelpBox");
@@ -203,6 +244,9 @@ namespace CarterGames.Experimental.MultiScene.Editor
         }
         
 
+        /// <summary>
+        /// Draws the buttons section of the window.
+        /// </summary>
         private static void DrawButtons()
         {
             EditorGUILayout.BeginHorizontal();
