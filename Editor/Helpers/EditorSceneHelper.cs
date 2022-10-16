@@ -18,6 +18,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
         private static List<string> _cachedScenesInBuildSettingsKeys = new List<string>();
 
         private static bool _hasCache;
+        private static bool _isListening;
 
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Properties
@@ -63,7 +64,15 @@ namespace CarterGames.Experimental.MultiScene.Editor
                 return _cachedScenesInBuildSettingsKeys;
             }
         }
-       
+        
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Events
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+
+        /// <summary>
+        /// Raises when the build settings are modified to update the cache.
+        /// </summary>
+        public static readonly MultiSceneEvt OnCacheUpdate = new MultiSceneEvt();
         
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   General Methods
@@ -78,6 +87,22 @@ namespace CarterGames.Experimental.MultiScene.Editor
             _cacheAllSceneNamesInProject = GetNamesOfScenesInProject();
             _cachedScenesInBuildSettings = GetAllScenesInProject();
             _hasCache = true;
+            
+            if (_isListening) return;
+       
+            EditorBuildSettings.sceneListChanged += OnSceneListChanged;
+            _isListening = true;
+            // _isListening doesn't reset as we only want to sub to it once. 
+        }
+
+
+        /// <summary>
+        /// Resets the cache bool so the system refreshes all the cached data for the scenes in the project. 
+        /// </summary>
+        private static void OnSceneListChanged()
+        {
+            _hasCache = false;
+            OnCacheUpdate.Raise();
         }
 
 

@@ -54,6 +54,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
             buildSettingsOptions = EditorSceneHelper.ScenesInBuildSettings.ToDisplayOptions();
             
             EditorSceneHelper.UpdateCaches();
+            EditorSceneHelper.OnCacheUpdate.Add(UpdateSceneNames);
             MultiSceneEditorEvents.Settings.OnGroupCategoriesChanged.Add(RefreshCategoryOptions);
         }
 
@@ -61,6 +62,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
         private void OnDisable()
         {
             scenes = null;
+            EditorSceneHelper.OnCacheUpdate.Remove(UpdateSceneNames);
             MultiSceneEditorEvents.Settings.OnGroupCategoriesChanged.Remove(RefreshCategoryOptions);
         }
 
@@ -86,8 +88,18 @@ namespace CarterGames.Experimental.MultiScene.Editor
         
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Draw Methods
-        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */      
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
+        
+        /// <summary>
+        /// Updates the scene names options.
+        /// </summary>
+        private void UpdateSceneNames()
+        {
+            buildSettingsOptions = EditorSceneHelper.ScenesInBuildSettings.ToDisplayOptions();
+        }
+        
+        
         /// <summary>
         /// Renders the title section of the editor...
         /// </summary>
