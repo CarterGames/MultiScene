@@ -98,7 +98,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
             }
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-            DrawGroupsAndButtons();
+            DrawGroupsAndButtons(GUI.enabled);
             EditorGUILayout.EndScrollView();
         }
 
@@ -150,7 +150,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
         /// <summary>
         /// Draws all the buttons for the scene groups in the categories required.
         /// </summary>
-        private void DrawGroupsAndButtons()
+        private void DrawGroupsAndButtons(bool isEnabled)
         {
             EditorGUILayout.Space(4f);
 
@@ -200,14 +200,14 @@ namespace CarterGames.Experimental.MultiScene.Editor
                         {
                             if (group.groupCategory.Equals(groupCat.groupName))
                             {
-                                GUI.enabled = !group.ContainsScene(string.Empty) && group.IsValid;
+                                GUI.enabled = !group.ContainsScene(string.Empty) && group.IsValid && isEnabled;
 
                                 if (GUILayout.Button(group.buttonLabel.Length > 0 ? group.buttonLabel : group.name))
                                 {
                                     LoadSceneGroupInEditor(group);
                                 }
 
-                                GUI.enabled = true;
+                                GUI.enabled = isEnabled;
                             }
                         }
 
