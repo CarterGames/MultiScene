@@ -196,7 +196,9 @@ namespace CarterGames.Experimental.MultiScene
         {
             if (!group.IsValid)
             {
+#if UNITY_EDITOR
                 MultiScenePopups.ShowInvalidSceneGroup();
+#endif
                 return;
             }
                 
