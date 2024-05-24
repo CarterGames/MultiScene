@@ -1,0 +1,16 @@
+{
+    "name": "CarterGames.MultiScene.Runtime",
+    "rootNamespace": "CarterGames.Experimental.MultiScene",
+    "references": [
+        "GUID:7577fcaa29c957d43a7833215b0209ed"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
