@@ -47,7 +47,7 @@ namespace CarterGames.Experimental.MultiScene.Editor
 
         // Graphics
         private const string MultiSceneLogoFilter = "T_MultiScene_Logo";
-        private const string MultiSceneLogoTransparentFilter = "T_MultiScene_Logo_Transparent";
+        private const string MultiSceneLogoTransparentFilter = "T_MultiScene_Transparent_Logo";
         private const string CarterGamesBannerFilter = "T_MultiScene_CarterGamesBanner";
 
 
