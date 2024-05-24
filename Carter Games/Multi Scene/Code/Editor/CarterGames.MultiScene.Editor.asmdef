@@ -1,0 +1,19 @@
+{
+    "name": "CarterGames.MultiScene.Editor",
+    "rootNamespace": "CarterGames.Experimental.MultiScene.Editor",
+    "references": [
+        "GUID:dbcc0ddf7638b7144b4a852688291428",
+        "GUID:7577fcaa29c957d43a7833215b0209ed"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
