@@ -1,3 +1,5 @@
+🟪🟪🟪 This asset is depreciated. It can still be downloaded and used, however, I'm no longer providing updates for this asset. 🟪🟪🟪
+
 ![Banner Full 1200-630x](https://github.com/CarterGames/MultiScene/assets/33253710/5ac7b9c7-2e51-41b0-8f1c-4f7058cdc6f1)
 
 A library to help developers create Unity games that split elements of the game into multiple scenes.
